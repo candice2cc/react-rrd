@@ -1,0 +1,36 @@
+{
+  "name": "react-rrd",
+  "version": "1.0.0",
+  "description": "Resizable、rotatable and draggable component for React",
+  "main": "./lib/index.es5.js",
+  "author": "Candice",
+  "scripts": {
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "build:prod:main": "rollup -c scripts/prod.js",
+    "build:prod:es5": "rollup -c scripts/prod.es5.js",
+    "build:prod:umd": "rollup -c scripts/prod.umd.js",
+    "build": "npm-run-all --parallel build:prod:*",
+  },
+  "devDependencies": {
+    "@storybook/react": "^3.2.17",
+    "babel-eslint": "^8.0.2",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^4.9.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-react": "^7.5.1",
+    "npm-run-all": "^4.1.2",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-replace": "^2.0.0"
+  },
+  "dependencies": {
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  }
+}
