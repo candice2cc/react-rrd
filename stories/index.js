@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import DraggableStory from './draggable';
+
 import Basic from './resize/basic';
 import AutoWidth from './resize/auto_width';
 import BoundsParent from './resize/bounds_parent';
@@ -9,6 +9,8 @@ import Grid from './resize/grid';
 import LookAspect from './resize/lock_aspect';
 import PercentSize from './resize/percent_size';
 import Mutiple from './resize/multiple';
+
+import RotateBasic from './rotate/basic';
 
 import './styles.css';
 
@@ -21,10 +23,11 @@ storiesOf('Button', module)
     ));
 
 
-storiesOf('Draggable', module)
-    .add('with text', () => (
-        <DraggableStory/>
+storiesOf('Rotatable', module)
+    .add('basic.', () => (
+        <RotateBasic/>
     ));
+
 storiesOf('Resizable', module)
     .add('basic.', () => (
         <Basic/>

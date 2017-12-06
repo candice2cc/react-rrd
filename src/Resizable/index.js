@@ -1,23 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
+import { userSelectNone, userSelectAuto } from '../common/style';
 import Resizer from './Resizer';
 
 let baseSizeId = 0;
-const userSelectNone = {
-    userSelect: 'none',
-    MozUserSelect: 'none',
-    WebkitUserSelect: 'none',
-    MsUserSelect: 'none',
-};
-
-const userSelectAuto = {
-    userSelect: 'auto',
-    MozUserSelect: 'auto',
-    WebkitUserSelect: 'auto',
-    MsUserSelect: 'auto',
-};
 
 const clamp = (n, min, max) => Math.max(Math.min(n, max), min);
 const snap = (n, size) => Math.round(n / size) * size;

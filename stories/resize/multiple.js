@@ -10,12 +10,9 @@ const style = {
     background: '#f0f0f0',
     margin: '8px',
 };
-const onMouseUp = (event) => {
-    console.log(event);
-};
 
 export default () => (
-    <div onMouseUp={onMouseUp}>
+    <div>
         <Resizable
             style={style}
             width={200}
