@@ -378,7 +378,7 @@ export default class Resizable extends React.Component {
 
     onMouseUp = (event) => {
         const { isResizing, direction, original } = this.state;
-        if (!isResizing) return;
+        if (!isResizing) return false;
         const delta = {
             width: this.getSize().width - original.width,
             height: this.getSize().height - original.height,

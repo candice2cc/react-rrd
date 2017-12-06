@@ -3,8 +3,19 @@ import PropTypes from 'prop-types';
 
 import { userSelectNone, userSelectAuto } from '../common/style';
 import Rotater from './Rotater';
+import cursorRotate from './cursor_rotate.png';
 
+const cursor = {
+    cursor: `url(${cursorRotate}),auto`,
+};
 
+const cursorNone = {
+    cursor: 'auto',
+};
+const calculdateAngle = (coordinates) => {
+    let radians = Math.atan2(coordinates.mouseX, coordinates.mouseY);
+    return (radians * (180 / Math.PI) * -1);
+};
 export default class Resizable extends React.Component {
     static propTypes = {
         children: PropTypes.node,
@@ -17,6 +28,7 @@ export default class Resizable extends React.Component {
             bottomLeft: PropTypes.bool,
             topLeft: PropTypes.bool,
         }),
+        degree: PropTypes.number,
         handleStyles: PropTypes.object,
         handleClasses: PropTypes.string,
         handleWrapperStyle: PropTypes.object,
@@ -40,7 +52,13 @@ export default class Resizable extends React.Component {
         super(props);
         this.state = {
             isRotating: false,
+            angle: 0,
+            degree: typeof this.props.degree === 'undefined' ?
+                0
+                : this.props.degree,
             original: {
+                angle: 0,
+                degree: 0,
             },
         };
 
@@ -52,8 +70,7 @@ export default class Resizable extends React.Component {
             window.addEventListener('touchend', this.onMouseUp);
         }
     }
-    componentDidMount() {
-    }
+
 
     componentWillUnmount() {
         if (typeof window !== 'undefined') {
@@ -64,15 +81,68 @@ export default class Resizable extends React.Component {
         }
     }
 
-    onRotateStart = (event, direction) => {
-        console.log(direction);
-    };
-    onMouseMove = (event) => {
+    /**
+     * 鼠标坐标相对target元素圆心坐标
+     * @param event
+     * @returns {{mousex: number, mousey: number}}
+     */
+    getRelativeCoordinates(event) {
+        const clientRect = this.rotatable.getBoundingClientRect();
+        return {
+            mouseX: event.pageX - clientRect.left - (clientRect.width / 2),
+            mouseY: event.pageY - clientRect.top - (clientRect.height / 2),
+        };
+    }
 
+
+    onRotateStart = (event, direction) => {
+        if (event.nativeEvent.which === 3) {
+            return false;
+        }
+        if (this.props.onRotateStart) {
+            this.props.onRotateStart(event, direction, this.rotatable);
+        }
+        const angle = calculdateAngle(this.getRelativeCoordinates(event));
+        const { degree } = this.state;
+        this.setState({
+            original: {
+                angle,
+                degree,
+            },
+            isRotating: true,
+            direction,
+        });
+    };
+
+
+    onMouseMove = (event) => {
+        if (!this.state.isRotating) return false;
+        const {
+            original, direction,
+        } = this.state;
+        const angle = calculdateAngle(this.getRelativeCoordinates(event));
+        const delta = angle - original.angle;
+        const newDegree = delta + original.degree;
+        this.setState({ angle, degree: newDegree });
+        if (this.props.onRotate) {
+            this.props.onRotate(event, direction, this.rotatable, newDegree);
+        }
     };
     onMouseUp = (event) => {
-
+        const { isRotating, direction, degree } = this.state;
+        if (!isRotating) return false;
+        if (this.props.onRotateStop) {
+            this.props.onRotateStop(event, direction, this.rotatable, degree);
+        }
+        this.setState({ isRotating: false });
     };
+
+    getRotateStyle() {
+        const { degree } = this.state;
+        return {
+            transform: `rotate(${degree}deg)`,
+        };
+    }
 
 
     renderRotater() {
@@ -107,6 +177,7 @@ export default class Resizable extends React.Component {
     }
     render() {
         const userSelect = this.state.isRotating ? userSelectNone : userSelectAuto;
+        const cursorStyle = this.state.isRotating ? cursor : cursorNone;
         const {
             style, className,
         } = this.props;
@@ -115,8 +186,11 @@ export default class Resizable extends React.Component {
                 style={{
                     position: 'relative',
                     ...userSelect,
+                    ...cursorStyle,
                     ...style,
+                    ...this.getRotateStyle(),
                     boxSizing: 'border-box',
+
                 }}
                 className={className}
             >

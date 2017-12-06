@@ -13,12 +13,12 @@ const style = {
     height: '200px',
     background: 'linear-gradient(to left, #f46b45 , #eea849)',
     color: '#fff',
-
 };
 
 export default () => (
     <Rotatable
         style={style}
+        degree={45}
     >
         Rotatable
     </Rotatable>
