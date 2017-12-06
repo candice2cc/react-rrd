@@ -5,13 +5,15 @@
   "main": "./lib/index.es5.js",
   "author": "Candice",
   "scripts": {
+    "lint": "eslint src",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "build:prod:main": "rollup -c scripts/prod.js",
     "build:prod:es5": "rollup -c scripts/prod.es5.js",
     "build:prod:umd": "rollup -c scripts/prod.umd.js",
-    "build": "npm-run-all --parallel build:prod:*",
+    "build": "npm-run-all --parallel build:prod:*"
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^3.2.17",
     "@storybook/react": "^3.2.17",
     "babel-eslint": "^8.0.2",
     "babel-plugin-external-helpers": "^6.22.0",

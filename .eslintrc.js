@@ -26,6 +26,16 @@ module.exports = {
     },
 
     "rules": {
-        "indent": ["error", 4]
+        "indent": ["error", 4],
+        "no-mixed-operators": "warn",
+        "prefer-destructuring":"warn",
+        "prefer-const":"off",
+        "no-underscore-dangle":"off",
+        "no-throw-literal":"error",
+        "no-param-reassign":"error",
+        "no-lone-blocks":"error",
+        "no-new": "error",
+        "class-methods-use-this": "warn",
+        "consistent-return": "warn",
     }
 };
