@@ -15,6 +15,7 @@ export default () => (
         style={style}
         width={200}
         height={200}
+        disable={false}
     >
         001
     </Resizable>

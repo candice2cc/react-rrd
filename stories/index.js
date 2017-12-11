@@ -8,9 +8,11 @@ import BoundsParent from './resize/bounds_parent';
 import Grid from './resize/grid';
 import LookAspect from './resize/lock_aspect';
 import PercentSize from './resize/percent_size';
-import Mutiple from './resize/multiple';
+import Multiple from './resize/multiple';
 
 import RotateBasic from './rotate/basic';
+
+import RrdBasic from './rrd/basic';
 
 import './styles.css';
 
@@ -38,7 +40,7 @@ storiesOf('Resizable', module)
     .add('bounds parent.', () => (
         <BoundsParent/>
     ))
-    .add('grid w10 h20.', () => (
+    .add('resizeGrid w10 h20.', () => (
         <Grid/>
     ))
     .add('look aspect.', () => (
@@ -47,6 +49,12 @@ storiesOf('Resizable', module)
     .add('percent size.', () => (
         <PercentSize/>
     ))
-    .add('mutiple resize.', () => (
-        <Mutiple/>
+    .add('multiple resize.', () => (
+        <Multiple/>
+    ));
+
+
+storiesOf('Rnd', module)
+    .add('basic.', () => (
+        <RrdBasic/>
     ));

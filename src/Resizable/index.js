@@ -6,13 +6,13 @@ import Resizer from './Resizer';
 
 let baseSizeId = 0;
 
-const clamp = (n, min, max) => Math.max(Math.min(n, max), min);
-const snap = (n, size) => Math.round(n / size) * size;
+export const clamp = (n, min, max) => Math.max(Math.min(n, max), min);
+export const snap = (n, size) => Math.round(n / size) * size;
 
-const endsWith = (str, searchStr) =>
+export const endsWith = (str, searchStr) =>
     str.substr(str.length - searchStr.length, searchStr.length) === searchStr;
 
-const getStringSize = (n) => {
+export const getStringSize = (n) => {
     if (endsWith(n.toString(), 'px')) return n.toString();
     if (endsWith(n.toString(), '%')) return n.toString();
     return `${n}px`;
@@ -33,6 +33,7 @@ export default class Resizable extends React.Component {
             bottomLeft: PropTypes.bool,
             topLeft: PropTypes.bool,
         }),
+        disable: PropTypes.bool,
         grid: PropTypes.array,
         lockAspectRatio: PropTypes.bool,
         handleStyles: PropTypes.object,
@@ -104,6 +105,7 @@ export default class Resizable extends React.Component {
             bottomLeft: true,
             topLeft: true,
         },
+        disable: false,
         grid: [1, 1],
         lockAspectRatio: false,
     };
@@ -356,11 +358,11 @@ export default class Resizable extends React.Component {
             newWidth = clamp(newWidth, computedMinWidth, computedMaxWidth);
             newHeight = clamp(newHeight, computedMinHeight, computedMaxHeight);
         }
-        if (this.props.grid) {
-            newWidth = snap(newWidth, this.props.grid[0]);
+        if (this.props.resizeGrid) {
+            newWidth = snap(newWidth, this.props.resizeGrid[0]);
         }
-        if (this.props.grid) {
-            newHeight = snap(newHeight, this.props.grid[1]);
+        if (this.props.resizeGrid) {
+            newHeight = snap(newHeight, this.props.resizeGrid[1]);
         }
 
         const delta = {
@@ -425,7 +427,7 @@ export default class Resizable extends React.Component {
 
     renderResizer() {
         const {
-            enable, handleStyles, handleClasses, handleWrapperStyle, handleWrapperClass,
+            enable, handleStyles, handleClasses, handleWrapperStyle, handleWrapperClass, disable,
         } = this.props;
 
         if (!enable) return null;
@@ -433,6 +435,7 @@ export default class Resizable extends React.Component {
             if (enable[dir] !== false) {
                 return (
                     <Resizer
+                        disable={disable}
                         key={dir}
                         direction={dir}
                         onResizeStart={this.onResizeStart}

@@ -3,4 +3,9 @@ html, body, #root, #root > div {
     margin: 0;
     padding: 10px;
     box-sizing: border-box;
+    position: relative;
   }
+
+.react-draggable {
+    cursor: move;
+}

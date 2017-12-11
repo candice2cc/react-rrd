@@ -73,29 +73,44 @@ export default class Resizer extends React.Component {
         className: PropTypes.string,
         replaceStyles: PropTypes.object,
         onResizeStart: PropTypes.func,
+        disable: PropTypes.bool,
     };
 
     static defaultProps = {
         direction: 'top',
         replaceStyles: {},
         onResizeStart() {},
+        disable: false,
+    };
+
+    handleResizeStart = (e, direction) => {
+        if (!this.props.disable) {
+            this.props.onResizeStart(e, direction);
+        }
     };
 
     render() {
-        const { className, replaceStyles, direction } = this.props;
+        const {
+            className, replaceStyles, direction, disable,
+        } = this.props;
+        let style = {
+            ...styles.base,
+            ...styles[direction],
+            ...(replaceStyles || {}),
+        };
+        if (disable) {
+            style.cursor = 'auto';
+        }
+
         return (
             <div
                 className={className}
-                style={{
-                    ...styles.base,
-                    ...styles[direction],
-                    ...(replaceStyles || {}),
-                }}
+                style={style}
                 onMouseDown={(e) => {
-                    this.props.onResizeStart(e, direction);
+                    this.handleResizeStart(e, direction);
                 }}
                 onTouchStart={(e) => {
-                    this.props.onResizeStart(e, direction);
+                    this.handleResizeStart(e, direction);
                 }}
             />
         );

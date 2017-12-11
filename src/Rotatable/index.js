@@ -5,14 +5,14 @@ import { userSelectNone, userSelectAuto } from '../common/style';
 import Rotater from './Rotater';
 import cursorRotate from './cursor_rotate.png';
 
-const cursor = {
+export const cursor = {
     cursor: `url(${cursorRotate}),auto`,
 };
 
-const cursorNone = {
+export const cursorNone = {
     cursor: 'auto',
 };
-const calculdateAngle = (coordinates) => {
+export const calculateAngle = (coordinates) => {
     let radians = Math.atan2(coordinates.mouseX, coordinates.mouseY);
     return (radians * (180 / Math.PI) * -1);
 };
@@ -28,6 +28,7 @@ export default class Rotatable extends React.Component {
             bottomLeft: PropTypes.bool,
             topLeft: PropTypes.bool,
         }),
+        disable: PropTypes.bool,
         degree: PropTypes.number,
         handleStyles: PropTypes.object,
         handleClasses: PropTypes.string,
@@ -46,6 +47,7 @@ export default class Rotatable extends React.Component {
             bottomLeft: true,
             topLeft: true,
         },
+        disable: false,
     };
 
     constructor(props) {
@@ -60,6 +62,7 @@ export default class Rotatable extends React.Component {
                 angle: 0,
                 degree: 0,
             },
+            direction: 'right',
         };
         this.updateExtendsProps(props);
 
@@ -112,7 +115,7 @@ export default class Rotatable extends React.Component {
         if (this.props.onRotateStart) {
             this.props.onRotateStart(event, direction, this.rotatable);
         }
-        const angle = calculdateAngle(this.getRelativeCoordinates(event));
+        const angle = calculateAngle(this.getRelativeCoordinates(event));
         const { degree } = this.state;
         this.setState({
             original: {
@@ -130,7 +133,7 @@ export default class Rotatable extends React.Component {
         const {
             original, direction,
         } = this.state;
-        const angle = calculdateAngle(this.getRelativeCoordinates(event));
+        const angle = calculateAngle(this.getRelativeCoordinates(event));
         const delta = angle - original.angle;
         const newDegree = delta + original.degree;
         this.setState({ angle, degree: newDegree });
@@ -157,7 +160,7 @@ export default class Rotatable extends React.Component {
 
     renderRotater() {
         const {
-            enable, handleStyles, handleClasses, handleWrapperStyle, handleWrapperClass,
+            enable, handleStyles, handleClasses, handleWrapperStyle, handleWrapperClass, disable,
         } = this.props;
 
         if (!enable) return null;
@@ -170,6 +173,7 @@ export default class Rotatable extends React.Component {
                         onRotateStart={this.onRotateStart}
                         replaceStyles={handleStyles && handleStyles[dir]}
                         className={handleClasses && handleClasses[dir]}
+                        disable={disable}
                     />
                 );
             }

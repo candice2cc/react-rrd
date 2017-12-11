@@ -63,6 +63,7 @@ export default () => (
         onRotateStart={handleRotateStart}
         onRotateStop={handleRotateStop}
         handleStyles={handleStyles}
+        disable={false}
     >
         Rotatable
     </Rotatable>
