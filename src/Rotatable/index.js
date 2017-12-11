@@ -16,7 +16,7 @@ const calculdateAngle = (coordinates) => {
     let radians = Math.atan2(coordinates.mouseX, coordinates.mouseY);
     return (radians * (180 / Math.PI) * -1);
 };
-export default class Resizable extends React.Component {
+export default class Rotatable extends React.Component {
     static propTypes = {
         children: PropTypes.node,
         onRotateStart: PropTypes.func,
@@ -61,7 +61,7 @@ export default class Resizable extends React.Component {
                 degree: 0,
             },
         };
-
+        this.updateExtendsProps(props);
 
         if (typeof window !== 'undefined') {
             window.addEventListener('mouseup', this.onMouseUp);
@@ -69,6 +69,9 @@ export default class Resizable extends React.Component {
             window.addEventListener('touchmove', this.onMouseMove);
             window.addEventListener('touchend', this.onMouseUp);
         }
+    }
+    componentWillReceiveProps(nextProps) {
+        this.updateExtendsProps(nextProps);
     }
 
 
@@ -79,6 +82,13 @@ export default class Resizable extends React.Component {
             window.removeEventListener('touchmove', this.onMouseMove);
             window.removeEventListener('touchend', this.onMouseUp);
         }
+    }
+    updateExtendsProps(props) {
+        this.extendsProps = Object.keys(props).reduce((acc, key) => {
+            if (Object.keys(Rotatable.propTypes).indexOf(key) !== -1) return acc;
+            acc[key] = props[key];
+            return acc;
+        }, {});
     }
 
     /**
@@ -193,6 +203,8 @@ export default class Resizable extends React.Component {
 
                 }}
                 className={className}
+                {...this.extendsProps}
+
             >
                 {this.props.children}
                 {this.renderRotater()}

@@ -1,6 +1,7 @@
 {
   "presets": [
     "react",
+    "flow",
     [ "env", {
       "modules": false,
       "targets": {

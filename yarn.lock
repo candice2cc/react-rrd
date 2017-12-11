@@ -4756,6 +4756,13 @@ react-dom@^16.2.0:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
+"react-draggable@https://github.com/candice2cc/react-draggable.git":
+  version "3.0.4"
+  resolved "https://github.com/candice2cc/react-draggable.git#d670fbfb4c6646f5323a9965554453a90a272825"
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
+
 react-html-attributes@^1.3.0:
   version "1.4.1"
   resolved "http://registry.npm.taobao.org/react-html-attributes/download/react-html-attributes-1.4.1.tgz#97b5ec710da68833598c8be6f89ac436216840a5"

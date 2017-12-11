@@ -15,10 +15,11 @@ export default {
     sourcemap: true,
     exports: 'named',
     name: 'react-rrd',
-    external: ['react', 'react-dom','prop-types'],
+    external: ['react', 'react-dom', 'prop-types', 'react-draggable'],
     globals: {
         react: 'React',
         'react-dom': 'ReactDOM',
         'prop-types': 'PropTypes',
+        'react-draggable': 'Draggable',
     },
 };

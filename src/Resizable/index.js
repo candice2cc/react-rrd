@@ -126,6 +126,7 @@ export default class Resizable extends React.Component {
                 height: 0,
             },
         };
+        this.updateExtendsProps(props);
 
         this.baseSizeId = `__resizable${baseSizeId}`;
         baseSizeId += 1;
@@ -136,6 +137,9 @@ export default class Resizable extends React.Component {
             window.addEventListener('touchmove', this.onMouseMove);
             window.addEventListener('touchend', this.onMouseUp);
         }
+    }
+    componentWillReceiveProps(nextProps) {
+        this.updateExtendsProps(nextProps);
     }
 
     componentDidMount() {
@@ -169,6 +173,14 @@ export default class Resizable extends React.Component {
             if (!(parent instanceof HTMLElement) || !(base instanceof Node)) return;
             parent.removeChild(base);
         }
+    }
+
+    updateExtendsProps(props) {
+        this.extendsProps = Object.keys(props).reduce((acc, key) => {
+            if (Object.keys(Resizable.propTypes).indexOf(key) !== -1) return acc;
+            acc[key] = props[key];
+            return acc;
+        }, {});
     }
     getSize() {
         let width = 0;
@@ -447,7 +459,6 @@ export default class Resizable extends React.Component {
         const {
             style, maxWidth, maxHeight, minWidth, minHeight, className,
         } = this.props;
-
         return (
             <div ref={(c) => { this.resizable = c; }}
                 style={{
@@ -463,6 +474,7 @@ export default class Resizable extends React.Component {
 
                 }}
                 className={className}
+                {...this.extendsProps}
             >
                 {this.props.children}
                 {this.renderResizer()}
