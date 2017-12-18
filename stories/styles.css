@@ -7,5 +7,5 @@ html, body, #root, #root > div {
   }
 
 .react-draggable {
-    cursor: move;
+    /*cursor: move;*/
 }

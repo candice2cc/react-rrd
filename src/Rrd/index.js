@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Draggable from '../react-draggable/Draggable';
 import Resizer from '../Resizable/Resizer';
 import { clamp, snap, endsWith, getStringSize } from '../Resizable/index';
-import { cursor, cursorNone, calculateAngle } from '../Rotatable/index';
+import { calculateAngle } from '../Rotatable/index';
 import Rotater from '../Rotatable/Rotater';
 import { userSelectAuto, userSelectNone } from '../common/style';
 import cursorRotate from '../Rotatable/cursor_rotate.png';
@@ -91,7 +91,7 @@ export default class Rrd extends React.Component {
         // resize props
         resizeGrid: PropTypes.array,
         lockAspectRatio: PropTypes.bool,
-        bounds: PropTypes.oneOfType([
+        resizeBounds: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.element,
         ]),
@@ -144,8 +144,28 @@ export default class Rrd extends React.Component {
         degree: PropTypes.number,
 
         // drag props
+        // - `both` allows movement horizontally and vertically (default).
+        // - `x` limits movement to horizontal axis.
+        // - `y` limits movement to vertical axis.
+        // - 'none' stops all movement.
         axis: PropTypes.string,
+        dragBounds: PropTypes.oneOfType([
+            PropTypes.shape({
+                left: PropTypes.number,
+                right: PropTypes.number,
+                top: PropTypes.number,
+                bottom: PropTypes.number,
+            }),
+            PropTypes.string,
+        ]),
         defaultPosition: PropTypes.shape({
+            x: PropTypes.number,
+            y: PropTypes.number,
+        }),
+        // Much like React form elements, if this property is present, the item
+        // becomes 'controlled' and is not responsive to user input. Use `position`
+        // if you need to have direct control of the element.
+        position: PropTypes.shape({
             x: PropTypes.number,
             y: PropTypes.number,
         }),
@@ -435,7 +455,7 @@ export default class Rrd extends React.Component {
                 if (lockAspectRatio) newWidth = newHeight / ratio;
             }
 
-            if (this.props.bounds === 'parent') {
+            if (this.props.resizeBounds === 'parent') {
                 const parent = this.getParentNode();
                 if (parent instanceof HTMLElement) {
                     const parentRect = parent.getBoundingClientRect();
@@ -447,7 +467,7 @@ export default class Rrd extends React.Component {
                     maxWidth = maxWidth && maxWidth < boundWidth ? maxWidth : boundWidth;
                     maxHeight = maxHeight && maxHeight < boundHeight ? maxHeight : boundHeight;
                 }
-            } else if (this.props.bounds === 'window') {
+            } else if (this.props.resizeBounds === 'window') {
                 if (typeof window !== 'undefined') {
                     const { left, top } = this.resizable.getBoundingClientRect();
                     const boundWidth = window.innerWidth - left;
@@ -455,14 +475,14 @@ export default class Rrd extends React.Component {
                     maxWidth = maxWidth && maxWidth < boundWidth ? maxWidth : boundWidth;
                     maxHeight = maxHeight && maxHeight < boundHeight ? maxHeight : boundHeight;
                 }
-            } else if (this.props.bounds instanceof HTMLElement) {
-                const targetRect = this.props.bounds.getBoundingClientRect();
+            } else if (this.props.resizeBounds instanceof HTMLElement) {
+                const targetRect = this.props.resizeBounds.getBoundingClientRect();
                 const targetLeft = targetRect.left;
                 const targetTop = targetRect.top;
                 const { left, top } = this.resizable.getBoundingClientRect();
-                if (!(this.props.bounds instanceof HTMLElement)) return;
-                const boundWidth = this.props.bounds.offsetWidth + (targetLeft - left);
-                const boundHeight = this.props.bounds.offsetHeight + (targetTop - top);
+                if (!(this.props.resizeBounds instanceof HTMLElement)) return;
+                const boundWidth = this.props.resizeBounds.offsetWidth + (targetLeft - left);
+                const boundHeight = this.props.resizeBounds.offsetHeight + (targetTop - top);
                 maxWidth = maxWidth && maxWidth < boundWidth ? maxWidth : boundWidth;
                 maxHeight = maxHeight && maxHeight < boundHeight ? maxHeight : boundHeight;
             }
@@ -668,11 +688,14 @@ export default class Rrd extends React.Component {
             ? getStringSize(size.height)
             : getSize('height');
 
-        const { degree, x, y } = this.state;
+        const { degree, disableDragging } = this.state;
+
+        // 使用left top 进行坐标移动，防止rotate后translate方向问题
         return {
-            transform: `rotate(${degree}deg) translate(${x}px,${y}px)`,
+            transform: `rotate(${degree}deg)`,
             width,
             height,
+            cursor: disableDragging ? 'inherit' : 'move',
         };
     }
 
@@ -683,21 +706,31 @@ export default class Rrd extends React.Component {
             userSelect = userSelectNone;
         }
         const {
-            style, maxWidth, maxHeight, minWidth, minHeight, className,
-            bounds, axis, defaultPosition, dragGrid,
+            style,
+            maxWidth,
+            maxHeight,
+            minWidth,
+            minHeight,
+            className,
+            dragBounds,
+            axis,
+            defaultPosition,
+            position,
+            dragGrid,
+            children,
         } = this.props;
-        const { degree, x, y } = this.state;
         return (
             <Draggable
                 disabled={this.state.disableDragging}
-                bounds={bounds}
+                bounds={dragBounds}
                 axis={axis}
                 defaultPosition={defaultPosition}
+                position={position}
                 grid={dragGrid}
                 onStart={this.handleDragStart}
                 onDrag={this.handleDrag}
                 onStop={this.handleDragStop}
-                transform={ `rotate(${degree}deg) translate(${x}px,${y}px)`}
+                disableTransform={true}
             >
                 <div ref={(c) => { this.rotatable = c; this.resizable = c; }}
                     style={{
@@ -714,7 +747,7 @@ export default class Rrd extends React.Component {
                     className={className}
                     {...this.extendsProps}
                 >
-                    {this.props.children}
+                    {children}
                     {this.renderResizer()}
                     {this.renderRotater()}
                 </div>
